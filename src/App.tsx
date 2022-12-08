@@ -1,5 +1,14 @@
+import { CssBaseline, ScopedCssBaseline } from "@mui/material";
+
+import AppRouter from "./AppRouter";
+
 function App() {
-  return <div className="App"></div>;
+  return (
+    <>
+      <CssBaseline />
+      <AppRouter />
+    </>
+  );
 }
 
 export default App;

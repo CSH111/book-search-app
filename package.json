@@ -45,6 +45,7 @@
   "devDependencies": {
     "babel-plugin-import": "^1.13.5",
     "customize-cra": "^1.0.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-simple-import-sort": "^8.0.0",
     "react-app-rewired": "^2.2.1"
   }

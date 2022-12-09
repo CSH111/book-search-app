@@ -1,59 +1,70 @@
-import { Autocomplete, TextField } from "@mui/material";
+import {
+  type AutocompleteHighlightChangeReason,
+  type AutocompleteInputChangeReason,
+  Autocomplete,
+  TextField,
+} from "@mui/material";
 import { useState } from "react";
 
 const SearchForm = () => {
-  const [input, setInput] = useState("");
   const [inputValue, setInputValue] = useState("");
-  const [originalInput, setOriginalInput] = useState("");
-  // const handleInputChange: = (_, value) => {
-  //   setInput(value);
-  // };
+  const [typedInputValue, setTypedInputValue] = useState("");
 
-  // const handleHighlightChange = (event, option, reason) => {
-  //   if (option && reason === "keyboard") {
-  //     setInput(option);
-  //   }
-  // };
-  // const handleFilterOptions = (currentOptions) => currentOptions;
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    console.log("제출", inputValue);
+  };
+
+  const handleInputChange = (
+    event: React.SyntheticEvent<Element, Event>,
+    value: string,
+    changeReason: AutocompleteInputChangeReason
+  ) => {
+    if (changeReason === "input") {
+      setTypedInputValue(value);
+    }
+    setInputValue(value);
+  };
+
+  const handleHighlightChange = (
+    event: React.SyntheticEvent<Element, Event>,
+    option: string | null,
+    reason: AutocompleteHighlightChangeReason
+  ) => {
+    if (reason !== "keyboard") return;
+    if (!option && event) {
+      setInputValue(typedInputValue);
+    }
+    if (option) {
+      setInputValue(option);
+    }
+  };
+
+  const handleEnterOnInput: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
+    if (e.key !== "Enter") return;
+    e.stopPropagation();
+  };
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-      }}
-    >
-      <button type="submit">d</button>
+    <form onSubmit={handleSubmit}>
+      <button type="submit">검색</button>
       <Autocomplete
         freeSolo
-        value={input}
-        onInputChange={(e, v, r) => {
-          if (r === "input") {
-            setOriginalInput(v);
-          }
-          setInput(v);
-        }}
-        onChange={(_, value, r) => {
-          setInput(value ?? "");
-        }}
+        value={inputValue}
+        onInputChange={handleInputChange}
         clearOnBlur={false}
         options={labelList}
         includeInputInList={true}
-        onHighlightChange={(event, option, reason) => {
-          if (!option && event && reason === "keyboard") {
-            setInput(originalInput);
-          }
-          if (option && reason === "keyboard") {
-            setInput(option);
-          }
-        }}
+        onHighlightChange={handleHighlightChange}
         filterOptions={(val) => val}
         style={{ width: 300 }}
         renderInput={(params) => (
           <TextField
             {...params}
             // label="Combo box"
+            placeholder="원하는 책을 검색하세요"
             variant="outlined"
-            // onSubmit={(e) => e.preventDefault()}
-            // onKeyDown={(e) => console.log(e.code)}
+            onKeyDown={handleEnterOnInput}
           />
         )}
       />

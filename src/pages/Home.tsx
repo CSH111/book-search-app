@@ -1,5 +1,4 @@
 import { SearchForm } from "../components/common";
-
 const Home = () => {
   return (
     <div>

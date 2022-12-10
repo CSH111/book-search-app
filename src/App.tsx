@@ -1,4 +1,4 @@
-import { CssBaseline, ScopedCssBaseline } from "@mui/material";
+import { CssBaseline } from "@mui/material";
 
 import AppRouter from "./AppRouter";
 

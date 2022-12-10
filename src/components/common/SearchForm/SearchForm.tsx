@@ -1,14 +1,22 @@
+import { Search } from "@mui/icons-material";
 import {
   type AutocompleteHighlightChangeReason,
   type AutocompleteInputChangeReason,
   Autocomplete,
+  InputAdornment,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState } from "react";
+
+type FilterValue = "title" | "person" | "publisher";
 
 const SearchForm = () => {
   const [inputValue, setInputValue] = useState("");
   const [typedInputValue, setTypedInputValue] = useState("");
+  const [toggleValue, setToggleValue] = useState<FilterValue>("title");
+  const input = useRef<HTMLInputElement>(null);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -45,28 +53,53 @@ const SearchForm = () => {
     e.stopPropagation();
   };
 
+  const handleToggleChange = (e: React.MouseEvent<HTMLElement, MouseEvent>, value: FilterValue) => {
+    setToggleValue(value);
+    input.current?.focus();
+    console.log(input.current);
+  };
+
   return (
     <form onSubmit={handleSubmit}>
-      <button type="submit">검색</button>
+      <ToggleButtonGroup
+        onChange={handleToggleChange}
+        value={toggleValue}
+        color="primary"
+        exclusive
+        size="small"
+      >
+        <ToggleButton value="title">책 제목</ToggleButton>
+        <ToggleButton value="person">저자</ToggleButton>
+        <ToggleButton value="publisher">출판사</ToggleButton>
+      </ToggleButtonGroup>
       <Autocomplete
         freeSolo
         value={inputValue}
         onInputChange={handleInputChange}
-        clearOnBlur={false}
         options={labelList}
         includeInputInList={true}
         onHighlightChange={handleHighlightChange}
         filterOptions={(val) => val}
-        style={{ width: 300 }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            // label="Combo box"
-            placeholder="원하는 책을 검색하세요"
-            variant="outlined"
-            onKeyDown={handleEnterOnInput}
-          />
-        )}
+        renderInput={(params) => {
+          return (
+            <TextField
+              {...params}
+              autoFocus
+              inputRef={input}
+              placeholder="원하는 책을 검색하세요"
+              variant="outlined"
+              onKeyDown={handleEnterOnInput}
+              InputProps={{
+                ...params.InputProps,
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          );
+        }}
       />
     </form>
   );

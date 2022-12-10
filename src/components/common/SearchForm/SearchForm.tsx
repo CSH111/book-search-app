@@ -10,14 +10,17 @@ import {
 } from "@mui/material";
 import { useRef, useState } from "react";
 
-type FilterValue = "title" | "person" | "publisher";
+import { FILTER_VALUES } from "@/constants";
+import { useService } from "@/service";
+import { FilterValue } from "@/types";
 
 const SearchForm = () => {
+  const xx = useService();
+  console.log(xx?.bookService);
   const [inputValue, setInputValue] = useState("");
   const [typedInputValue, setTypedInputValue] = useState("");
-  const [toggleValue, setToggleValue] = useState<FilterValue>("title");
+  const [toggleValue, setToggleValue] = useState<FilterValue>(FILTER_VALUES.title);
   const input = useRef<HTMLInputElement>(null);
-
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     console.log("제출", inputValue);
@@ -56,7 +59,6 @@ const SearchForm = () => {
   const handleToggleChange = (e: React.MouseEvent<HTMLElement, MouseEvent>, value: FilterValue) => {
     setToggleValue(value);
     input.current?.focus();
-    console.log(input.current);
   };
 
   return (
@@ -68,9 +70,9 @@ const SearchForm = () => {
         exclusive
         size="small"
       >
-        <ToggleButton value="title">책 제목</ToggleButton>
-        <ToggleButton value="person">저자</ToggleButton>
-        <ToggleButton value="publisher">출판사</ToggleButton>
+        <ToggleButton value={FILTER_VALUES.title}>책 제목</ToggleButton>
+        <ToggleButton value={FILTER_VALUES.person}>저자</ToggleButton>
+        <ToggleButton value={FILTER_VALUES.publisher}>출판사</ToggleButton>
       </ToggleButtonGroup>
       <Autocomplete
         freeSolo
@@ -106,6 +108,7 @@ const SearchForm = () => {
 };
 
 export default SearchForm;
+
 const top100Films = [
   { title: "The Shawshank Redemption", year: 1994 },
   { title: "미미", year: 1972 },

@@ -1,4 +1,4 @@
-import { Box, Container } from "@mui/material";
+import { Container } from "@mui/material";
 import Typography from "@mui/material/Typography";
 
 import { SearchForm } from "../components/common";

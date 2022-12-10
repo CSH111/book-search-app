@@ -1,5 +1,14 @@
 const plugins = [
   [
+    "module-resolver",
+    {
+      root: ["./"],
+      alias: {
+        "@": "./src",
+      },
+    },
+  ],
+  [
     "babel-plugin-import",
     {
       libraryName: "@mui/material",

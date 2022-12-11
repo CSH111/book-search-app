@@ -8,23 +8,40 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { FILTER_VALUES } from "@/constants";
-import { useService } from "@/service";
+import { type Dispatch, type RootState } from "@/store";
+import { getBooks } from "@/store/booksSlice";
 import { FilterValue } from "@/types";
 
 const SearchForm = () => {
-  const xx = useService();
-  console.log(xx?.bookService);
+  const { booksData, isError, isLoading } = useSelector((state: RootState) => state.books);
+  const titles = booksData?.documents.map((doc) => doc.title);
+
+  const dispatch = useDispatch<Dispatch>();
   const [inputValue, setInputValue] = useState("");
   const [typedInputValue, setTypedInputValue] = useState("");
-  const [toggleValue, setToggleValue] = useState<FilterValue>(FILTER_VALUES.title);
+  const [filterToggleValue, setFilterToggleValue] = useState<FilterValue>(FILTER_VALUES.title);
   const input = useRef<HTMLInputElement>(null);
+
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     console.log("제출", inputValue);
   };
+
+  useEffect(() => {
+    if (typedInputValue === "") return;
+
+    const timer = setTimeout(async () => {
+      dispatch(getBooks({ keyWord: typedInputValue, filterOption: filterToggleValue }));
+    }, 300);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [typedInputValue]);
 
   const handleInputChange = (
     event: React.SyntheticEvent<Element, Event>,
@@ -57,7 +74,7 @@ const SearchForm = () => {
   };
 
   const handleToggleChange = (e: React.MouseEvent<HTMLElement, MouseEvent>, value: FilterValue) => {
-    setToggleValue(value);
+    setFilterToggleValue(value);
     input.current?.focus();
   };
 
@@ -65,7 +82,7 @@ const SearchForm = () => {
     <form onSubmit={handleSubmit}>
       <ToggleButtonGroup
         onChange={handleToggleChange}
-        value={toggleValue}
+        value={filterToggleValue}
         color="primary"
         exclusive
         size="small"
@@ -78,7 +95,7 @@ const SearchForm = () => {
         freeSolo
         value={inputValue}
         onInputChange={handleInputChange}
-        options={labelList}
+        options={titles ?? []}
         includeInputInList={true}
         onHighlightChange={handleHighlightChange}
         filterOptions={(val) => val}
@@ -108,14 +125,3 @@ const SearchForm = () => {
 };
 
 export default SearchForm;
-
-const top100Films = [
-  { title: "The Shawshank Redemption", year: 1994 },
-  { title: "미미", year: 1972 },
-  { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: "Pulp Fiction", year: 1994 },
-];
-const labelList = top100Films.map((item) => item.title);

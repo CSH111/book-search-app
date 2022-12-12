@@ -1,5 +1,6 @@
 import { Search } from "@mui/icons-material";
 import {
+  type AutocompleteChangeReason,
   type AutocompleteHighlightChangeReason,
   type AutocompleteInputChangeReason,
   Autocomplete,
@@ -10,42 +11,55 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { FILTER_VALUES } from "@/constants";
 import { type Dispatch, type RootState } from "@/store";
 import { getBooks } from "@/store/booksSlice";
+import { booksActions } from "@/store/booksSlice";
 import { FilterValue } from "@/types";
 import { deduplicate } from "@/utils";
+// const val:XX =
 
 const SearchForm = () => {
   const { booksData, isError, isLoading } = useSelector((state: RootState) => state.books);
+  const dispatch = useDispatch<Dispatch>();
+
   const titles = booksData?.documents.map((doc) => doc.title);
   const uniqueTitles = deduplicate(titles ?? []);
-  // const navigate = useNavigate()
-  const dispatch = useDispatch<Dispatch>();
+
+  // const navigate = useNavigate();
+  const [hilightedOption, setHilightedOption] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState("");
-  const [typedInputValue, setTypedInputValue] = useState("");
-  const [filterToggleValue, setFilterToggleValue] = useState<FilterValue>(FILTER_VALUES.title);
+  const [savedInputValue, setSavedInputValue] = useState("");
   const input = useRef<HTMLInputElement>(null);
+
+  const [params, setParams] = useSearchParams();
+  const targetParam = (params.get("target") as FilterValue) ?? FILTER_VALUES.title;
+
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    console.log("제출", inputValue);
+    console.log("제출", inputValue, targetParam);
   };
+  useEffect(() => {
+    setParams({ target: targetParam });
+  }, []);
 
   // TODO: 분리
   useEffect(() => {
-    console.log(filterToggleValue);
-    if (typedInputValue === "") return;
+    if (savedInputValue === "") {
+      dispatch(booksActions.clear());
+      return;
+    }
 
     const timer = setTimeout(async () => {
-      dispatch(getBooks({ keyWord: typedInputValue, filterOption: filterToggleValue }));
+      dispatch(getBooks({ query: savedInputValue, target: targetParam }));
     }, 500);
 
     return () => {
       clearTimeout(timer);
     };
-  }, [typedInputValue, filterToggleValue]);
+  }, [savedInputValue, targetParam]);
 
   const handleInputChange = (
     event: React.SyntheticEvent<Element, Event>,
@@ -53,9 +67,9 @@ const SearchForm = () => {
     changeReason: AutocompleteInputChangeReason
   ) => {
     if (changeReason === "input") {
-      setTypedInputValue(value);
+      setSavedInputValue(value);
+      setInputValue(value);
     }
-    setInputValue(value);
   };
 
   const handleHighlightChange = (
@@ -64,12 +78,13 @@ const SearchForm = () => {
     reason: AutocompleteHighlightChangeReason
   ) => {
     if (reason !== "keyboard") return;
-    if (!option && event) {
-      setInputValue(typedInputValue);
+    if (!option) {
+      setInputValue(savedInputValue);
+      setHilightedOption(null);
+      return;
     }
-    if (option) {
-      setInputValue(option);
-    }
+    setInputValue(option);
+    setHilightedOption(option);
   };
 
   const handleEnterOnInput: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
@@ -80,14 +95,14 @@ const SearchForm = () => {
   const handleToggleChange = (e: React.MouseEvent<HTMLElement, MouseEvent>, value: FilterValue) => {
     input.current?.focus();
     if (!value) return;
-    setFilterToggleValue(value);
+    setParams({ target: value });
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <ToggleButtonGroup
         onChange={handleToggleChange}
-        value={filterToggleValue}
+        value={params.get("target")}
         color="primary"
         exclusive
         size="small"
@@ -97,8 +112,11 @@ const SearchForm = () => {
         <ToggleButton value={FILTER_VALUES.publisher}>출판사</ToggleButton>
       </ToggleButtonGroup>
       <Autocomplete
+        // autoHighlight={true} //default false
         freeSolo
-        value={inputValue}
+        // onChange={handleValueChange}
+        value={hilightedOption}
+        inputValue={inputValue}
         onInputChange={handleInputChange}
         options={uniqueTitles}
         includeInputInList={true}

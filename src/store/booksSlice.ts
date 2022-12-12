@@ -6,18 +6,18 @@ import { FilterValue } from "@/types";
 export const getBooks = createAsyncThunk(
   "GET_BOOKS",
   async ({
-    keyWord,
-    filterOption = "title",
+    query,
+    target = "title",
     size = 10,
     page = 1,
   }: {
-    keyWord: string;
-    filterOption?: FilterValue;
+    query: string;
+    target?: FilterValue;
     size?: number;
     page?: number;
   }) => {
     const { bookService } = service;
-    const res = await bookService.get(keyWord, filterOption, size, page);
+    const res = await bookService.get(query, target, size, page);
     return res.data;
   }
 );

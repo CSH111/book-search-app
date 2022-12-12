@@ -10,38 +10,42 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import { FILTER_VALUES } from "@/constants";
 import { type Dispatch, type RootState } from "@/store";
 import { getBooks } from "@/store/booksSlice";
 import { FilterValue } from "@/types";
+import { deduplicate } from "@/utils";
 
 const SearchForm = () => {
   const { booksData, isError, isLoading } = useSelector((state: RootState) => state.books);
   const titles = booksData?.documents.map((doc) => doc.title);
-
+  const uniqueTitles = deduplicate(titles ?? []);
+  // const navigate = useNavigate()
   const dispatch = useDispatch<Dispatch>();
   const [inputValue, setInputValue] = useState("");
   const [typedInputValue, setTypedInputValue] = useState("");
   const [filterToggleValue, setFilterToggleValue] = useState<FilterValue>(FILTER_VALUES.title);
   const input = useRef<HTMLInputElement>(null);
-
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     console.log("제출", inputValue);
   };
 
+  // TODO: 분리
   useEffect(() => {
+    console.log(filterToggleValue);
     if (typedInputValue === "") return;
 
     const timer = setTimeout(async () => {
       dispatch(getBooks({ keyWord: typedInputValue, filterOption: filterToggleValue }));
-    }, 300);
+    }, 500);
 
     return () => {
       clearTimeout(timer);
     };
-  }, [typedInputValue]);
+  }, [typedInputValue, filterToggleValue]);
 
   const handleInputChange = (
     event: React.SyntheticEvent<Element, Event>,
@@ -74,8 +78,9 @@ const SearchForm = () => {
   };
 
   const handleToggleChange = (e: React.MouseEvent<HTMLElement, MouseEvent>, value: FilterValue) => {
-    setFilterToggleValue(value);
     input.current?.focus();
+    if (!value) return;
+    setFilterToggleValue(value);
   };
 
   return (
@@ -95,7 +100,7 @@ const SearchForm = () => {
         freeSolo
         value={inputValue}
         onInputChange={handleInputChange}
-        options={titles ?? []}
+        options={uniqueTitles}
         includeInputInList={true}
         onHighlightChange={handleHighlightChange}
         filterOptions={(val) => val}

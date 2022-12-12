@@ -23,12 +23,13 @@ export const getBooks = createAsyncThunk(
 );
 
 type Book = {
-  autors: string[];
+  authors: string[];
   contents: string;
   publisher: string;
   thumbnail: string;
   title: string;
   url: string;
+  isbn: string;
 };
 
 interface State {
@@ -38,14 +39,18 @@ interface State {
 }
 const initialState: State = {
   booksData: null,
-  isLoading: true,
+  isLoading: false,
   isError: false,
 };
 
 const booksSlice = createSlice({
   name: "books",
   initialState,
-  reducers: {},
+  reducers: {
+    clear(state) {
+      state.booksData = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getBooks.fulfilled, (state, action) => {
       state.booksData = action.payload;
@@ -62,5 +67,5 @@ const booksSlice = createSlice({
     });
   },
 });
-
+export const booksActions = booksSlice.actions;
 export default booksSlice.reducer;

@@ -29,7 +29,7 @@ const SearchForm = () => {
   const uniqueTitles = deduplicate(titles ?? []);
 
   // const navigate = useNavigate();
-  const [hilightedOption, setHilightedOption] = useState<string | null>(null);
+  const [option, setOption] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState("");
   const [savedInputValue, setSavedInputValue] = useState("");
   const input = useRef<HTMLInputElement>(null);
@@ -39,6 +39,7 @@ const SearchForm = () => {
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+    // console.log(new FormData(e.target as HTMLFormElement).get("keyword"));
     console.log("제출", inputValue, targetParam);
   };
   useEffect(() => {
@@ -54,21 +55,25 @@ const SearchForm = () => {
 
     const timer = setTimeout(async () => {
       dispatch(getBooks({ query: savedInputValue, target: targetParam }));
-    }, 500);
+    }, 350);
 
     return () => {
       clearTimeout(timer);
     };
   }, [savedInputValue, targetParam]);
 
+  const handleChange = (event: React.SyntheticEvent<Element, Event>, value: string | null) => {
+    setOption(value);
+  };
+
   const handleInputChange = (
     event: React.SyntheticEvent<Element, Event>,
     value: string,
     changeReason: AutocompleteInputChangeReason
   ) => {
+    setInputValue(value);
     if (changeReason === "input") {
       setSavedInputValue(value);
-      setInputValue(value);
     }
   };
 
@@ -80,11 +85,8 @@ const SearchForm = () => {
     if (reason !== "keyboard") return;
     if (!option) {
       setInputValue(savedInputValue);
-      setHilightedOption(null);
-      return;
     }
-    setInputValue(option);
-    setHilightedOption(option);
+    setOption(option);
   };
 
   const handleEnterOnInput: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
@@ -112,21 +114,21 @@ const SearchForm = () => {
         <ToggleButton value={FILTER_VALUES.publisher}>출판사</ToggleButton>
       </ToggleButtonGroup>
       <Autocomplete
-        // autoHighlight={true} //default false
-        freeSolo
-        // onChange={handleValueChange}
-        value={hilightedOption}
+        options={uniqueTitles}
+        value={option}
+        onChange={handleChange}
         inputValue={inputValue}
         onInputChange={handleInputChange}
-        options={uniqueTitles}
-        includeInputInList={true}
         onHighlightChange={handleHighlightChange}
+        freeSolo
+        includeInputInList={true}
         filterOptions={(val) => val}
         renderInput={(params) => {
           return (
             <TextField
               {...params}
               autoFocus
+              name="keyword"
               inputRef={input}
               placeholder="원하는 책을 검색하세요"
               variant="outlined"

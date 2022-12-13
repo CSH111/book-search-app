@@ -19,17 +19,16 @@ import { getBooks } from "@/store/booksSlice";
 import { booksActions } from "@/store/booksSlice";
 import { FilterValue } from "@/types";
 import { deduplicate } from "@/utils";
-// const val:XX =
 
+//TODO Click 서브밋, 로딩 이용 결과없음 표시
 const SearchForm = () => {
   const { booksData, isError, isLoading } = useSelector((state: RootState) => state.books);
   const dispatch = useDispatch<Dispatch>();
-
+  // console.log(booksData?.documents);
   const titles = booksData?.documents.map((doc) => doc.title);
   const uniqueTitles = deduplicate(titles ?? []);
-
-  // const navigate = useNavigate();
-  const [option, setOption] = useState<string | null>(null);
+  const isNoResult = titles?.length === 0;
+  const [optionValue, setOptionValue] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState("");
   const [savedInputValue, setSavedInputValue] = useState("");
   const input = useRef<HTMLInputElement>(null);
@@ -39,7 +38,6 @@ const SearchForm = () => {
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    // console.log(new FormData(e.target as HTMLFormElement).get("keyword"));
     console.log("제출", inputValue, targetParam);
   };
   useEffect(() => {
@@ -48,11 +46,7 @@ const SearchForm = () => {
 
   // TODO: 분리
   useEffect(() => {
-    if (savedInputValue === "") {
-      dispatch(booksActions.clear());
-      return;
-    }
-
+    if (inputValue === "") return;
     const timer = setTimeout(async () => {
       dispatch(getBooks({ query: savedInputValue, target: targetParam }));
     }, 350);
@@ -62,8 +56,20 @@ const SearchForm = () => {
     };
   }, [savedInputValue, targetParam]);
 
-  const handleChange = (event: React.SyntheticEvent<Element, Event>, value: string | null) => {
-    setOption(value);
+  useEffect(() => {
+    if (inputValue === "") {
+      dispatch(booksActions.clear());
+      return;
+    }
+  }, [inputValue]);
+
+  const handleClickOption = (
+    event: React.SyntheticEvent<Element, Event>,
+    value: string | null,
+    reason: AutocompleteChangeReason
+  ) => {
+    if (reason !== "selectOption") return;
+    console.log("submit 로직");
   };
 
   const handleInputChange = (
@@ -86,7 +92,7 @@ const SearchForm = () => {
     if (!option) {
       setInputValue(savedInputValue);
     }
-    setOption(option);
+    setOptionValue(option);
   };
 
   const handleEnterOnInput: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
@@ -114,9 +120,11 @@ const SearchForm = () => {
         <ToggleButton value={FILTER_VALUES.publisher}>출판사</ToggleButton>
       </ToggleButtonGroup>
       <Autocomplete
+        loading={isNoResult}
+        loadingText={"추천 검색어가 없습니다."}
         options={uniqueTitles}
-        value={option}
-        onChange={handleChange}
+        value={optionValue}
+        onChange={handleClickOption}
         inputValue={inputValue}
         onInputChange={handleInputChange}
         onHighlightChange={handleHighlightChange}

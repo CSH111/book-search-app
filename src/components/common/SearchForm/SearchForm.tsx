@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
+import { createSearchParams, useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 import { FILTER_VALUES, PARAMS_KEYS } from "@/constants";
 import { type Dispatch, type RootState } from "@/store";
@@ -36,10 +36,11 @@ const SearchForm = () => {
   const input = useRef<HTMLInputElement>(null);
 
   const [params, setParams] = useSearchParams();
-  const targetParam = (params.get(PARAMS_KEYS.target) as FilterValue) ?? FILTER_VALUES.title;
+  const filterValue = params.get(PARAMS_KEYS.filter) as FilterValue;
 
   const paramsForBooksPage = {
-    [PARAMS_KEYS.target]: targetParam,
+    [PARAMS_KEYS.target]: filterValue,
+    [PARAMS_KEYS.filter]: filterValue,
     [PARAMS_KEYS.query]: inputValue,
     [PARAMS_KEYS.page]: "1",
     [PARAMS_KEYS.size]: "10",
@@ -58,7 +59,8 @@ const SearchForm = () => {
   };
 
   useEffect(() => {
-    setParams({ [PARAMS_KEYS.target]: targetParam });
+    if (filterValue) return;
+    setParams({ [PARAMS_KEYS.filter]: FILTER_VALUES.title });
   }, []);
 
   // TODO: 분리
@@ -68,7 +70,7 @@ const SearchForm = () => {
       dispatch(
         getBooks({
           [PARAMS_KEYS.query]: savedInputValue,
-          [PARAMS_KEYS.target]: targetParam,
+          [PARAMS_KEYS.target]: filterValue,
           size: 8,
         })
       );
@@ -77,7 +79,7 @@ const SearchForm = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [savedInputValue, targetParam]);
+  }, [savedInputValue, filterValue]);
 
   useEffect(() => {
     if (inputValue === "") {
@@ -119,7 +121,6 @@ const SearchForm = () => {
     if (reason !== "keyboard") return;
     if (!option) {
       setInputValue(savedInputValue);
-      // return;
     }
     setOptionValue(option);
   };
@@ -132,14 +133,15 @@ const SearchForm = () => {
   const handleToggleChange = (e: React.MouseEvent<HTMLElement, MouseEvent>, value: FilterValue) => {
     input.current?.focus();
     if (!value) return;
-    setParams({ target: value });
+    params.set(PARAMS_KEYS.filter, value);
+    setParams(params);
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <ToggleButtonGroup
         onChange={handleToggleChange}
-        value={targetParam}
+        value={filterValue}
         color="primary"
         exclusive
         size="small"

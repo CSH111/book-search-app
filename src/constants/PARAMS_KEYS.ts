@@ -3,6 +3,7 @@ const PARAMS_KEYS = {
   target: "target",
   size: "size",
   page: "page",
+  filter: "filter",
 } as const;
 
 export default PARAMS_KEYS;

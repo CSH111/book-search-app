@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
 
 import { FILTER_VALUES, PARAMS_KEYS } from "@/constants";
 import { type Dispatch, type RootState } from "@/store";
@@ -21,12 +21,15 @@ import { FilterValue } from "@/types";
 import { deduplicate } from "@/utils";
 
 const SearchForm = () => {
+  const navigate = useNavigate();
+
   const { booksData, isError, isLoading } = useSelector((state: RootState) => state.books);
   const dispatch = useDispatch<Dispatch>();
-  // console.log(booksData?.documents);
+
   const titles = booksData?.documents.map((doc) => doc.title);
   const uniqueTitles = deduplicate(titles ?? []);
   const isNoResult = titles?.length === 0;
+
   const [optionValue, setOptionValue] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState("");
   const [savedInputValue, setSavedInputValue] = useState("");
@@ -35,19 +38,40 @@ const SearchForm = () => {
   const [params, setParams] = useSearchParams();
   const targetParam = (params.get(PARAMS_KEYS.target) as FilterValue) ?? FILTER_VALUES.title;
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    console.log("제출", inputValue, targetParam);
+  const paramsForBooksPage = {
+    [PARAMS_KEYS.target]: targetParam,
+    [PARAMS_KEYS.query]: inputValue,
+    [PARAMS_KEYS.page]: "1",
+    [PARAMS_KEYS.size]: "10",
   };
+  const navigateToBooks = (query?: string) => {
+    navigate({
+      pathname: "/books",
+      search: query
+        ? `?${createSearchParams({ ...paramsForBooksPage, [PARAMS_KEYS.query]: query })}`
+        : `?${createSearchParams({ ...paramsForBooksPage })}`,
+    });
+  };
+  const executeSubmitLogic = (query?: string) => {
+    dispatch(booksActions.clear());
+    navigateToBooks(query);
+  };
+
   useEffect(() => {
-    setParams({ target: targetParam });
+    setParams({ [PARAMS_KEYS.target]: targetParam });
   }, []);
 
   // TODO: 분리
   useEffect(() => {
-    if (inputValue === "") return;
+    if (savedInputValue === "") return;
     const timer = setTimeout(async () => {
-      dispatch(getBooks({ query: savedInputValue, target: targetParam, size: 8 }));
+      dispatch(
+        getBooks({
+          [PARAMS_KEYS.query]: savedInputValue,
+          [PARAMS_KEYS.target]: targetParam,
+          size: 8,
+        })
+      );
     }, 350);
 
     return () => {
@@ -62,13 +86,18 @@ const SearchForm = () => {
     }
   }, [inputValue]);
 
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    executeSubmitLogic();
+  };
+
   const handleClickOption = (
     event: React.SyntheticEvent<Element, Event>,
     value: string | null,
     reason: AutocompleteChangeReason
   ) => {
     if (reason !== "selectOption") return;
-    console.log("submit 로직");
+    executeSubmitLogic(value ?? "");
   };
 
   const handleInputChange = (
@@ -90,6 +119,7 @@ const SearchForm = () => {
     if (reason !== "keyboard") return;
     if (!option) {
       setInputValue(savedInputValue);
+      // return;
     }
     setOptionValue(option);
   };

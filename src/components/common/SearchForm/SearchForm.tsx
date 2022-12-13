@@ -6,8 +6,6 @@ import {
   Autocomplete,
   InputAdornment,
   TextField,
-  ToggleButton,
-  ToggleButtonGroup,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,6 +17,8 @@ import { getBooks } from "@/store/booksSlice";
 import { booksActions } from "@/store/booksSlice";
 import { FilterValue } from "@/types";
 import { deduplicate } from "@/utils";
+
+import * as S from "./styles";
 
 const SearchForm = () => {
   const navigate = useNavigate();
@@ -129,8 +129,7 @@ const SearchForm = () => {
     if (e.key !== "Enter") return;
     e.stopPropagation();
   };
-
-  const handleToggleChange = (e: React.MouseEvent<HTMLElement, MouseEvent>, value: FilterValue) => {
+  const handleToggleChange = (e: React.SyntheticEvent<Element, Event>, value: FilterValue) => {
     input.current?.focus();
     if (!value) return;
     params.set(PARAMS_KEYS.filter, value);
@@ -139,17 +138,11 @@ const SearchForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <ToggleButtonGroup
-        onChange={handleToggleChange}
-        value={filterValue}
-        color="primary"
-        exclusive
-        size="small"
-      >
-        <ToggleButton value={FILTER_VALUES.title}>책 제목</ToggleButton>
-        <ToggleButton value={FILTER_VALUES.person}>저자</ToggleButton>
-        <ToggleButton value={FILTER_VALUES.publisher}>출판사</ToggleButton>
-      </ToggleButtonGroup>
+      <S.Tabs value={filterValue} onChange={handleToggleChange}>
+        <S.Tab label={"제목"} value={FILTER_VALUES.title} />
+        <S.Tab label={"저자"} value={FILTER_VALUES.person} />
+        <S.Tab label={"출판사"} value={FILTER_VALUES.publisher} />
+      </S.Tabs>
       <Autocomplete
         loading={isNoResult}
         loadingText={"추천 검색어가 없습니다."}

@@ -1,13 +1,13 @@
-import { useLocation } from "react-router-dom";
+import { Container } from "@mui/material";
 
 import { SearchForm } from "@/components/common";
 
 const Books = () => {
   return (
-    <div>
+    <Container maxWidth="md" fixed>
       Books
       <SearchForm />
-    </div>
+    </Container>
   );
 };
 

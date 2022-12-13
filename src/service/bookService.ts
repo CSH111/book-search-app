@@ -1,6 +1,7 @@
 import { AxiosInstance } from "axios";
 import { AxiosResponse } from "axios";
 
+import { PARAMS_KEYS } from "@/constants";
 import { FilterValue } from "@/types";
 
 export interface BookService {
@@ -10,7 +11,14 @@ export interface BookService {
 export const createBookService = (client: AxiosInstance): BookService => {
   return {
     get(query, target, size, page) {
-      return client.get("", { params: { query, target, size, page } });
+      return client.get("", {
+        params: {
+          [PARAMS_KEYS.query]: query,
+          [PARAMS_KEYS.target]: target,
+          [PARAMS_KEYS.size]: size,
+          [PARAMS_KEYS.page]: page,
+        },
+      });
     },
   };
 };

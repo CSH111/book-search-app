@@ -13,14 +13,13 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { FILTER_VALUES } from "@/constants";
+import { FILTER_VALUES, PARAMS_KEYS } from "@/constants";
 import { type Dispatch, type RootState } from "@/store";
 import { getBooks } from "@/store/booksSlice";
 import { booksActions } from "@/store/booksSlice";
 import { FilterValue } from "@/types";
 import { deduplicate } from "@/utils";
 
-//TODO Click 서브밋, 로딩 이용 결과없음 표시
 const SearchForm = () => {
   const { booksData, isError, isLoading } = useSelector((state: RootState) => state.books);
   const dispatch = useDispatch<Dispatch>();
@@ -34,7 +33,7 @@ const SearchForm = () => {
   const input = useRef<HTMLInputElement>(null);
 
   const [params, setParams] = useSearchParams();
-  const targetParam = (params.get("target") as FilterValue) ?? FILTER_VALUES.title;
+  const targetParam = (params.get(PARAMS_KEYS.target) as FilterValue) ?? FILTER_VALUES.title;
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -48,7 +47,7 @@ const SearchForm = () => {
   useEffect(() => {
     if (inputValue === "") return;
     const timer = setTimeout(async () => {
-      dispatch(getBooks({ query: savedInputValue, target: targetParam }));
+      dispatch(getBooks({ query: savedInputValue, target: targetParam, size: 8 }));
     }, 350);
 
     return () => {
@@ -110,7 +109,7 @@ const SearchForm = () => {
     <form onSubmit={handleSubmit}>
       <ToggleButtonGroup
         onChange={handleToggleChange}
-        value={params.get("target")}
+        value={targetParam}
         color="primary"
         exclusive
         size="small"

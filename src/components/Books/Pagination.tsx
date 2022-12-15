@@ -7,8 +7,8 @@ type PaginationProps = {
 
 const Pagination = () => {
   const [params, setParams] = useSearchParams();
-  const currentPage = Number(params.get("page"));
-
+  const { target, filter, title, query, total, page, size } = Object.fromEntries(params.entries());
+  const totalPage = Math.ceil(Number(total) / Number(size));
   const handleChange = (event: React.ChangeEvent<unknown>, page: number) => {
     params.set("page", page.toString());
     setParams(params);
@@ -16,8 +16,8 @@ const Pagination = () => {
 
   return (
     <MuiPaginaion
-      count={10}
-      page={currentPage}
+      count={totalPage}
+      page={Number(page)}
       onChange={handleChange}
       color="primary"
       sx={{ mb: "30px" }}

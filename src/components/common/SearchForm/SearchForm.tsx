@@ -19,28 +19,33 @@ import { extractAuthorsFromBooks, extractTitlesFromBooks } from "@/utils";
 
 import * as S from "./styles";
 //TODO param set로직 페이지 컴포넌트로 이동, State 객체화
-const SearchForm = () => {
+
+type SearchFormProps = {
+  focusOnLoad?: boolean;
+};
+const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
   const navigate = useNavigate();
 
   const { booksData, isError, isLoading } = useSelector((state: RootState) => state.books);
   const dispatch = useDispatch<Dispatch>();
 
+  const [params, setParams] = useSearchParams();
+  // const filterValue = params.get(PARAMS_KEYS.filter) as FilterValue;
+  const { filter: filterValue, query } = Object.fromEntries(params.entries());
+
   const [optionValue, setOptionValue] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState("");
-  const [savedInputValue, setSavedInputValue] = useState("");
+  const [savedInputValue, setSavedInputValue] = useState(query ?? "");
   const input = useRef<HTMLInputElement>(null);
   const [isInputFocused, setIsInputFocused] = useState(false);
 
-  const [params, setParams] = useSearchParams();
-
-  const filterValue = params.get(PARAMS_KEYS.filter) as FilterValue;
-
-  const paramsForBooksPage = {
+  const paramsForNavigation = {
     [PARAMS_KEYS.target]: filterValue,
     [PARAMS_KEYS.filter]: filterValue,
     [PARAMS_KEYS.query]: inputValue,
     [PARAMS_KEYS.page]: "1",
     [PARAMS_KEYS.size]: "10",
+    [PARAMS_KEYS.total]: booksData?.meta?.pageable_count?.toString() ?? "0",
   };
 
   const [options, setOptions] = useState<string[] | null>(null);
@@ -50,8 +55,8 @@ const SearchForm = () => {
     navigate({
       pathname: "/books",
       search: query
-        ? `?${createSearchParams({ ...paramsForBooksPage, [PARAMS_KEYS.query]: query })}`
-        : `?${createSearchParams({ ...paramsForBooksPage })}`,
+        ? `?${createSearchParams({ ...paramsForNavigation, [PARAMS_KEYS.query]: query })}`
+        : `?${createSearchParams({ ...paramsForNavigation })}`,
     });
   };
 
@@ -84,6 +89,11 @@ const SearchForm = () => {
     setParams({ [PARAMS_KEYS.filter]: FILTER_VALUES.title });
   }, []);
 
+  useEffect(() => {
+    if (!query) return;
+    setInputValue(query);
+  }, [query]);
+
   // TODO: 분리
   useEffect(() => {
     if (savedInputValue === "") return;
@@ -91,7 +101,7 @@ const SearchForm = () => {
       dispatch(
         getBooks({
           [PARAMS_KEYS.query]: savedInputValue,
-          [PARAMS_KEYS.target]: filterValue,
+          [PARAMS_KEYS.target]: filterValue as FilterValue,
           size: 8,
         })
       );
@@ -185,7 +195,7 @@ const SearchForm = () => {
               placeholder="원하는 책을 검색하세요"
               variant="outlined"
               sx={{ boxShadow: 3 }}
-              autoFocus
+              autoFocus={Boolean(focusOnLoad)}
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
               InputProps={{

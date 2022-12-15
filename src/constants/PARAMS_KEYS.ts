@@ -4,6 +4,7 @@ const PARAMS_KEYS = {
   size: "size",
   page: "page",
   filter: "filter",
+  total: "total",
 } as const;
 
 export default PARAMS_KEYS;

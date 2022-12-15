@@ -14,7 +14,8 @@ type SearchFilterProps = {
 const SearchFilter = ({ orientation, sx }: SearchFilterProps) => {
   const [params, setParams] = useSearchParams();
 
-  const filterValue = params.get(PARAMS_KEYS.filter) as FilterValue;
+  // const filterValue = params.get(PARAMS_KEYS.filter) as FilterValue;
+  const filterValue = params.get(PARAMS_KEYS.filter) ?? FILTER_VALUES.title;
 
   const handleToggleChange = (e: React.SyntheticEvent<Element, Event>, value: FilterValue) => {
     if (!value) return;

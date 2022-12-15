@@ -13,7 +13,6 @@ export const Tabs = styled(MuiTabs)`
     background-color: ${palette.grey[200]};
     ${orientation === "vertical" &&
     css`
-      /* display: flex; */
       align-self: stretch;
       box-shadow: #6d6d6d86 2px 4px 5px -3px;
       button {
@@ -23,13 +22,13 @@ export const Tabs = styled(MuiTabs)`
       .MuiTabs-flexContainer {
         height: 100%;
         display: grid;
-        grid-template-rows: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
       }
       .MuiTabs-indicator {
         width: 100%;
       }
       .MuiSvgIcon-root {
-        font-size: 16px;
+        font-size: 20px;
       }
     `}
     ${orientation === "horizontal" &&

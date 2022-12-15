@@ -37,10 +37,10 @@ const SearchFilter = ({ orientation, sx }: SearchFilterProps) => {
         label={orientation === "horizontal" ? "저자" : <Business />}
         value={FILTER_VALUES.person}
       />
-      <S.Tab
+      {/* <S.Tab
         label={orientation === "horizontal" ? "출판사" : <Person />}
         value={FILTER_VALUES.publisher}
-      />
+      /> */}
     </S.Tabs>
   );
 };

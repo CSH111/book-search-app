@@ -5,11 +5,11 @@ import {
   type AutocompleteInputChangeReason,
   Autocomplete,
   InputAdornment,
-  TextField,
+  Popper,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createSearchParams, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
 
 import { FILTER_VALUES, PARAMS_KEYS } from "@/constants";
 import { type Dispatch, type RootState } from "@/store";
@@ -25,17 +25,17 @@ const SearchForm = () => {
 
   const { booksData, isError, isLoading } = useSelector((state: RootState) => state.books);
   const dispatch = useDispatch<Dispatch>();
-
   const titles = booksData?.documents.map((doc) => doc.title);
   const uniqueTitles = deduplicate(titles ?? []);
   const isNoResult = titles?.length === 0;
-
   const [optionValue, setOptionValue] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState("");
   const [savedInputValue, setSavedInputValue] = useState("");
   const input = useRef<HTMLInputElement>(null);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const [params, setParams] = useSearchParams();
+
   const filterValue = params.get(PARAMS_KEYS.filter) as FilterValue;
 
   const paramsForBooksPage = {
@@ -71,7 +71,7 @@ const SearchForm = () => {
         getBooks({
           [PARAMS_KEYS.query]: savedInputValue,
           [PARAMS_KEYS.target]: filterValue,
-          size: 8,
+          size: 7,
         })
       );
     }, 350);
@@ -94,7 +94,7 @@ const SearchForm = () => {
   };
 
   const handleClickOption = (
-    event: React.SyntheticEvent<Element, Event>,
+    e: React.SyntheticEvent<Element, Event>,
     value: string | null,
     reason: AutocompleteChangeReason
   ) => {
@@ -103,7 +103,7 @@ const SearchForm = () => {
   };
 
   const handleInputChange = (
-    event: React.SyntheticEvent<Element, Event>,
+    e: React.SyntheticEvent<Element, Event>,
     value: string,
     changeReason: AutocompleteInputChangeReason
   ) => {
@@ -114,7 +114,7 @@ const SearchForm = () => {
   };
 
   const handleHighlightChange = (
-    event: React.SyntheticEvent<Element, Event>,
+    e: React.SyntheticEvent<Element, Event>,
     option: string | null,
     reason: AutocompleteHighlightChangeReason
   ) => {
@@ -129,20 +129,18 @@ const SearchForm = () => {
     if (e.key !== "Enter") return;
     e.stopPropagation();
   };
-  const handleToggleChange = (e: React.SyntheticEvent<Element, Event>, value: FilterValue) => {
-    input.current?.focus();
-    if (!value) return;
-    params.set(PARAMS_KEYS.filter, value);
-    setParams(params);
+  //TOTO: target지정버그
+
+  const handleInputFocus = () => {
+    setIsInputFocused(true);
+  };
+
+  const handleInputBlur = () => {
+    setIsInputFocused(false);
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <S.Tabs value={filterValue} onChange={handleToggleChange}>
-        <S.Tab label={"제목"} value={FILTER_VALUES.title} />
-        <S.Tab label={"저자"} value={FILTER_VALUES.person} />
-        <S.Tab label={"출판사"} value={FILTER_VALUES.publisher} />
-      </S.Tabs>
       <Autocomplete
         loading={isNoResult}
         loadingText={"추천 검색어가 없습니다."}
@@ -155,16 +153,21 @@ const SearchForm = () => {
         freeSolo
         includeInputInList={true}
         filterOptions={(val) => val}
+        disablePortal={true}
+        size="small"
         renderInput={(params) => {
           return (
-            <TextField
+            <S.TextField
               {...params}
-              autoFocus
-              name="keyword"
+              isListOpen={Boolean(booksData?.documents) && isInputFocused}
               inputRef={input}
+              onKeyDown={handleEnterOnInput}
               placeholder="원하는 책을 검색하세요"
               variant="outlined"
-              onKeyDown={handleEnterOnInput}
+              sx={{ boxShadow: 3 }}
+              autoFocus
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
               InputProps={{
                 ...params.InputProps,
                 startAdornment: (
@@ -176,6 +179,10 @@ const SearchForm = () => {
             />
           );
         }}
+        PaperComponent={(props) => <S.Paper {...props} sx={{ boxShadow: 3 }} />}
+        PopperComponent={(props) => (
+          <Popper {...props} disablePortal modifiers={[{ name: "flip", enabled: false }]} />
+        )}
       />
     </form>
   );

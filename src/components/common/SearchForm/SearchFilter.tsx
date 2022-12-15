@@ -6,7 +6,6 @@ import { FILTER_VALUES, PARAMS_KEYS } from "@/constants";
 import { FilterValue } from "@/types";
 
 import * as S from "./styles";
-// TODO 세로필터 만들기..
 
 type SearchFilterProps = {
   orientation?: "horizontal" | "vertical";

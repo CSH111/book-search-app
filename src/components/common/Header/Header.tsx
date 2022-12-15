@@ -2,11 +2,13 @@ import { Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 import * as S from "./styles";
+//TODO: 모바일뷰에서 로고글자 대신 메인이미지 + Avatar태그
 type HeaderProps = {
   children?: React.ReactNode;
   bg?: boolean;
   shadow?: 0 | 1 | 2;
 };
+
 const Header = ({ children, bg, shadow }: HeaderProps) => {
   return (
     <S.AppBar position="static" sx={{ boxShadow: shadow ?? 2 }}>

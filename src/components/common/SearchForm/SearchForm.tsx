@@ -18,7 +18,7 @@ import { FilterValue } from "@/types";
 import { extractAuthorsFromBooks, extractTitlesFromBooks } from "@/utils";
 
 import * as S from "./styles";
-
+//TODO param set로직 페이지 컴포넌트로 이동, State 객체화
 const SearchForm = () => {
   const navigate = useNavigate();
 
@@ -104,7 +104,6 @@ const SearchForm = () => {
 
   useEffect(() => {
     if (inputValue === "") {
-      console.log("clear by 0 input");
       dispatch(booksActions.clear());
       return;
     }
@@ -151,7 +150,6 @@ const SearchForm = () => {
     if (e.key !== "Enter") return;
     e.stopPropagation();
   };
-  //TOTO: target지정버그
 
   const handleInputFocus = () => {
     setIsInputFocused(true);

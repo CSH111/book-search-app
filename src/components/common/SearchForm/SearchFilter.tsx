@@ -1,4 +1,4 @@
-import { Business, MenuBook, Person } from "@mui/icons-material";
+import { MenuBook, Person } from "@mui/icons-material";
 import { SxProps } from "@mui/system";
 import { useSearchParams } from "react-router-dom";
 
@@ -34,13 +34,9 @@ const SearchFilter = ({ orientation, sx }: SearchFilterProps) => {
         value={FILTER_VALUES.title}
       />
       <S.Tab
-        label={orientation === "horizontal" ? "저자" : <Business />}
+        label={orientation === "horizontal" ? "저자" : <Person />}
         value={FILTER_VALUES.person}
       />
-      {/* <S.Tab
-        label={orientation === "horizontal" ? "출판사" : <Person />}
-        value={FILTER_VALUES.publisher}
-      /> */}
     </S.Tabs>
   );
 };

@@ -13,10 +13,9 @@ import { createSearchParams, useNavigate, useSearchParams } from "react-router-d
 
 import { FILTER_VALUES, PARAMS_KEYS } from "@/constants";
 import { type Dispatch, type RootState } from "@/store";
-import { getBooks } from "@/store/booksSlice";
-import { booksActions } from "@/store/booksSlice";
+import { booksActions, getBooks } from "@/store/booksSlice";
 import { FilterValue } from "@/types";
-import { deduplicate } from "@/utils";
+import { extractAuthorsFromBooks, extractTitlesFromBooks } from "@/utils";
 
 import * as S from "./styles";
 
@@ -25,9 +24,7 @@ const SearchForm = () => {
 
   const { booksData, isError, isLoading } = useSelector((state: RootState) => state.books);
   const dispatch = useDispatch<Dispatch>();
-  const titles = booksData?.documents.map((doc) => doc.title);
-  const uniqueTitles = deduplicate(titles ?? []);
-  const isNoResult = titles?.length === 0;
+
   const [optionValue, setOptionValue] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState("");
   const [savedInputValue, setSavedInputValue] = useState("");
@@ -45,6 +42,10 @@ const SearchForm = () => {
     [PARAMS_KEYS.page]: "1",
     [PARAMS_KEYS.size]: "10",
   };
+
+  const [options, setOptions] = useState<string[] | null>(null);
+  const isNoResult = options?.length === 0;
+
   const navigateToBooks = (query?: string) => {
     navigate({
       pathname: "/books",
@@ -53,10 +54,30 @@ const SearchForm = () => {
         : `?${createSearchParams({ ...paramsForBooksPage })}`,
     });
   };
+
   const executeSubmitLogic = (query?: string) => {
     dispatch(booksActions.clear());
     navigateToBooks(query);
   };
+
+  useEffect(() => {
+    if (!booksData) {
+      setOptions(null);
+      return;
+    }
+    switch (filterValue) {
+      case FILTER_VALUES.title: {
+        const titles = extractTitlesFromBooks(booksData.documents, inputValue);
+        setOptions(titles);
+        break;
+      }
+      case FILTER_VALUES.person: {
+        const authors = extractAuthorsFromBooks(booksData.documents, inputValue);
+        setOptions(authors);
+        break;
+      }
+    }
+  }, [booksData, filterValue]);
 
   useEffect(() => {
     if (filterValue) return;
@@ -71,7 +92,7 @@ const SearchForm = () => {
         getBooks({
           [PARAMS_KEYS.query]: savedInputValue,
           [PARAMS_KEYS.target]: filterValue,
-          size: 7,
+          size: 8,
         })
       );
     }, 350);
@@ -83,10 +104,11 @@ const SearchForm = () => {
 
   useEffect(() => {
     if (inputValue === "") {
+      console.log("clear by 0 input");
       dispatch(booksActions.clear());
       return;
     }
-  }, [inputValue]);
+  }, [inputValue, filterValue]);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -144,7 +166,7 @@ const SearchForm = () => {
       <Autocomplete
         loading={isNoResult}
         loadingText={"추천 검색어가 없습니다."}
-        options={uniqueTitles}
+        options={options ?? []}
         value={optionValue}
         onChange={handleClickOption}
         inputValue={inputValue}
@@ -159,7 +181,7 @@ const SearchForm = () => {
           return (
             <S.TextField
               {...params}
-              isListOpen={Boolean(booksData?.documents) && isInputFocused}
+              isListOpen={Boolean(options) && isInputFocused}
               inputRef={input}
               onKeyDown={handleEnterOnInput}
               placeholder="원하는 책을 검색하세요"

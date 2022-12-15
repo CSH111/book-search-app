@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import service from "@/service";
 import { FilterValue } from "@/types";
-
+import { Book } from "@/types";
 export const getBooks = createAsyncThunk(
   "GET_BOOKS",
   async ({
@@ -21,16 +21,6 @@ export const getBooks = createAsyncThunk(
     return res.data;
   }
 );
-
-type Book = {
-  authors: string[];
-  contents: string;
-  publisher: string;
-  thumbnail: string;
-  title: string;
-  url: string;
-  isbn: string;
-};
 
 interface State {
   booksData: { documents: Book[]; meta: { is_end: boolean; pageable_count: number } } | null;

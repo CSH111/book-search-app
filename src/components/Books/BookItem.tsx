@@ -25,12 +25,7 @@ const BookItem = ({
 }: BookItemProps) => {
   const { breakpoints } = useTheme();
   const underMid = useMediaQuery(breakpoints.down("md"));
-  console.log(breakpoints.down("md"));
-  console.log(breakpoints.down("sm"));
-  console.log(breakpoints.down("xs"));
-  console.log(breakpoints.down("xxs"));
 
-  console.log(underMid);
   return (
     <ListItem>
       {underMid && (

@@ -29,6 +29,8 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
   const { booksData, isError, isLoading } = useSelector((state: RootState) => state.books);
   const dispatch = useDispatch<Dispatch>();
 
+  const [options, setOptions] = useState<string[] | null>(null);
+
   const [params, setParams] = useSearchParams();
   const { filter: filterValue, query } = Object.fromEntries(params.entries());
 
@@ -38,6 +40,8 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
   const input = useRef<HTMLInputElement>(null);
 
   const [isPopupOpened, setIsPopupOpened] = useState(false);
+  const isNoResult = options !== null && options.length === 0;
+
   const paramsForNavigation = {
     [PARAMS_KEYS.target]: filterValue,
     [PARAMS_KEYS.filter]: filterValue,
@@ -45,10 +49,7 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
     [PARAMS_KEYS.page]: "1",
     [PARAMS_KEYS.size]: "10",
   };
-  console.log(isPopupOpened);
-  const [options, setOptions] = useState<string[] | null>(null);
-  const isNoResult = options !== null && options.length === 0;
-  console.log(isNoResult);
+
   const navigateToBooks = (query?: string) => {
     navigate({
       pathname: "/books",
@@ -59,6 +60,7 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
   };
 
   const executeSubmitLogic = (query?: string) => {
+    console.log("서브밋");
     dispatch(booksActions.clear());
     navigateToBooks(query);
   };

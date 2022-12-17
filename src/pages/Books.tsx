@@ -28,7 +28,7 @@ const Books = () => {
         page: Number(page),
       })
     );
-  }, [query, page]);
+  }, [query, page, target, size]);
 
   useEffect(() => {
     if (!booksData) return;

@@ -36,7 +36,7 @@ const BookItem = ({
             </Typography>
           </Grid>
           <Grid item container spacing={2}>
-            <Grid item xs="auto" xxs={12}>
+            <Grid item xs="auto" xxs={12} display="flex" justifyContent="center">
               <ImgBox>
                 {thumbnail ? (
                   <img src={thumbnail} alt="bookImg" />

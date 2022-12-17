@@ -67,16 +67,15 @@ export const Tab = styled(MuiTab)`
 `;
 
 type TextFieldProp = {
-  isListOpen?: boolean;
+  isPopupOpened?: boolean;
 };
-
 export const TextField = styled(MuiTextField, {
-  shouldForwardProp: (prop) => prop !== "isListOpen",
+  shouldForwardProp: (prop) => prop !== "isPopupOpened",
 })<TextFieldProp>`
-  ${({ theme: { palette }, isListOpen }) => css`
+  ${({ theme: { palette }, isPopupOpened }) => css`
     font-size: 12px !important;
     border: none;
-    border-radius: ${isListOpen ? "20px 20px 0 0" : " 9999px"};
+    border-radius: ${isPopupOpened ? "15px 15px 0 0" : " 9999px"};
     background-color: ${palette.common.white};
     display: flex;
     justify-content: center;
@@ -84,7 +83,7 @@ export const TextField = styled(MuiTextField, {
     fieldset {
       border: none;
       border-radius: 0;
-      border-bottom: ${isListOpen ? `solid 1px ${palette.grey[300]} !important` : "none"};
+      border-bottom: ${isPopupOpened ? `solid 1px ${palette.grey[300]} !important` : "none"};
     }
     .MuiInputBase-root {
       height: 45px;
@@ -100,7 +99,7 @@ css`justify-content`;
 
 export const Paper = styled(MuiPaper)`
   ${() => css`
-    border-radius: 0 0 20px 20px;
+    border-radius: 0 0 15px 15px;
     li {
       font-size: 14px;
       text-overflow: ellipsis;
@@ -111,7 +110,7 @@ export const Paper = styled(MuiPaper)`
 `;
 
 export const HorizontalBox = styled(MuiBox)`
-  ${({ theme: { palette } }) => css`
+  ${() => css`
     height: 100%;
     display: flex;
     align-items: stretch;

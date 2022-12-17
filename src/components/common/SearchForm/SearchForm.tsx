@@ -36,8 +36,8 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
   const [inputValue, setInputValue] = useState("");
   const [savedInputValue, setSavedInputValue] = useState(query ?? "");
   const input = useRef<HTMLInputElement>(null);
-  const [isInputFocused, setIsInputFocused] = useState(false);
 
+  const [isPopupOpened, setIsPopupOpened] = useState(false);
   const paramsForNavigation = {
     [PARAMS_KEYS.target]: filterValue,
     [PARAMS_KEYS.filter]: filterValue,
@@ -45,10 +45,10 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
     [PARAMS_KEYS.page]: "1",
     [PARAMS_KEYS.size]: "10",
   };
-
+  console.log(isPopupOpened);
   const [options, setOptions] = useState<string[] | null>(null);
-  const isNoResult = options?.length === 0;
-
+  const isNoResult = options !== null && options.length === 0;
+  console.log(isNoResult);
   const navigateToBooks = (query?: string) => {
     navigate({
       pathname: "/books",
@@ -159,17 +159,17 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
     e.stopPropagation();
   };
 
-  const handleInputFocus = () => {
-    setIsInputFocused(true);
+  const handlePopupOpen = () => {
+    setIsPopupOpened(true);
   };
-
-  const handleInputBlur = () => {
-    setIsInputFocused(false);
+  const handlePopupClose = () => {
+    setIsPopupOpened(false);
   };
-
   return (
     <form onSubmit={handleSubmit}>
       <Autocomplete
+        onOpen={handlePopupOpen}
+        onClose={handlePopupClose}
         loading={isNoResult}
         loadingText={"추천 검색어가 없습니다."}
         options={options ?? []}
@@ -187,15 +187,13 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
           return (
             <S.TextField
               {...params}
-              isListOpen={Boolean(options) && isInputFocused}
+              isPopupOpened={isPopupOpened && options !== null}
               inputRef={input}
               onKeyDown={handleEnterOnInput}
               placeholder="원하는 책을 검색하세요"
               variant="outlined"
               sx={{ boxShadow: 3 }}
               autoFocus={Boolean(focusOnLoad)}
-              onFocus={handleInputFocus}
-              onBlur={handleInputBlur}
               InputProps={{
                 ...params.InputProps,
                 startAdornment: (

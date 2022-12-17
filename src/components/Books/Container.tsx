@@ -7,7 +7,7 @@ type ContainerProps = {
 const Container = ({ children }: ContainerProps) => {
   return (
     <MuiContainer
-      maxWidth="md"
+      maxWidth="lg"
       fixed
       sx={{
         flex: 1,

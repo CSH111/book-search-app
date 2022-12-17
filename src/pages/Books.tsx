@@ -1,10 +1,10 @@
-import { Box, Divider, List, ListItem } from "@mui/material";
+import { Box, Divider, List } from "@mui/material";
 import { useEffect } from "react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
-import { Container, Pagination } from "@/components/Books";
+import { BookItem, Container, Pagination } from "@/components/Books";
 import { SearchForm } from "@/components/common";
 import { Header } from "@/components/common/Header";
 import { HorizontalSearchBox, SearchFilter } from "@/components/common/SearchForm";
@@ -43,17 +43,22 @@ const Books = () => {
           {total !== "0" && (
             <List>
               {booksData?.documents.map(
-                ({ title, authors, contents, url, thumbnail, publisher, isbn }, idx) => {
+                (
+                  { title, authors, thumbnail, publisher, isbn, datetime, price, sale_price },
+                  idx
+                ) => {
                   return (
                     <React.Fragment key={isbn}>
-                      {idx !== 0 && <Divider />}
-                      <ListItem>
-                        <div>{title} - </div>
-                        <div>{authors}</div>
-                        {/* <p>{contents}</p> */}
-                        {/* <div>{thumbnail}</div> */}
-                        {/* <div>{publisher}</div> */}
-                      </ListItem>
+                      {idx !== 0 && <Divider sx={{ margin: "15px" }} />}
+                      <BookItem
+                        authors={authors}
+                        title={title}
+                        thumbnail={thumbnail}
+                        publisher={publisher}
+                        datetime={datetime}
+                        price={price}
+                        sale_price={sale_price}
+                      />
                     </React.Fragment>
                   );
                 }

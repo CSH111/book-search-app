@@ -26,6 +26,10 @@ const BookItem = ({
   const { breakpoints } = useTheme();
   const underMid = useMediaQuery(breakpoints.down("md"));
   console.log(breakpoints.down("md"));
+  console.log(breakpoints.down("sm"));
+  console.log(breakpoints.down("xs"));
+  console.log(breakpoints.down("xxs"));
+
   console.log(underMid);
   return (
     <ListItem>
@@ -37,12 +41,12 @@ const BookItem = ({
             </Typography>
           </Grid>
           <Grid item container spacing={2}>
-            <Grid item sm="auto" xs={12}>
+            <Grid item xs="auto" xxs={12}>
               <Box display={"flex"} justifyContent="center">
                 <img src={thumbnail} />
               </Box>
             </Grid>
-            <Grid item container direction="column" sm>
+            <Grid item container direction="column" xs>
               <Grid item container direction="column">
                 <Grid item>
                   <BookTypography label="저자" contents={formatAuthors(authors)} />
@@ -54,7 +58,7 @@ const BookItem = ({
                   <BookTypography label="출간월" contents={formatISO(datetime)} />
                 </Grid>
               </Grid>
-              <Grid item container direction="column" xs>
+              <Grid item container direction="column">
                 <Grid item>
                   <BookTypography label="정가" contents={formatKrCurreny(price)} />
                 </Grid>

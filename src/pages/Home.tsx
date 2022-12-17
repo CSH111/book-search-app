@@ -1,10 +1,9 @@
 import { Container } from "@mui/material";
 
-import { Header } from "@/components/common/Header";
-import { SearchFilter, VerticalSearchBox } from "@/components/common/SearchForm";
-import { BooksImg, MainImgContainer } from "@/components/Home";
+import { BooksImg, Header } from "@/components/common";
+import { SearchFilter, SearchForm, VerticalSearchBox } from "@/components/common/SearchForm";
+import { MainImgContainer } from "@/components/Home";
 
-import { SearchForm } from "../components/common";
 const Home = () => {
   return (
     <>

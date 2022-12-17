@@ -24,11 +24,12 @@ const BookItem = ({
   sale_price,
 }: BookItemProps) => {
   const { breakpoints } = useTheme();
-  const downMid = useMediaQuery(breakpoints.down("md"));
-
+  const underMid = useMediaQuery(breakpoints.down("md"));
+  console.log(breakpoints.down("md"));
+  console.log(underMid);
   return (
     <ListItem>
-      {downMid && (
+      {underMid && (
         <Grid container spacing={1}>
           <Grid item>
             <Typography component="h2" sx={{ fontSize: "18px" }}>
@@ -66,7 +67,7 @@ const BookItem = ({
         </Grid>
       )}
 
-      {!downMid && (
+      {!underMid && (
         <Grid container spacing={2}>
           <Grid item>
             <img src={thumbnail} />

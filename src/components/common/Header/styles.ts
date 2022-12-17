@@ -15,7 +15,7 @@ export const ToolBar = styled(MuiToolBar)`
 `;
 
 export const LogoArea = styled(MuiBox)`
-  ${({ theme: { palette } }) => css`
+  ${({ theme: { palette, breakpoints } }) => css`
     background-color: ${palette.primary.main};
     align-self: stretch;
     box-shadow: #6d6d6d86 5px 4px 5px -2px;
@@ -23,13 +23,14 @@ export const LogoArea = styled(MuiBox)`
     display: flex;
     align-items: stretch;
     a {
-      padding: 0 15px;
-
       display: flex;
       align-items: center;
       justify-content: center;
       text-decoration: none;
       color: ${palette.common.white};
+      h1 {
+        margin: 0 15px;
+      }
     }
   `}
 `;

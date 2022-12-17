@@ -9,7 +9,7 @@ import { SearchForm } from "@/components/common";
 import { Header } from "@/components/common/Header";
 import { HorizontalSearchBox, SearchFilter } from "@/components/common/SearchForm";
 import { type Dispatch, type RootState } from "@/store";
-import { getBooksForResult, searchResultActions } from "@/store/searchResultSlice";
+import { getBooksForResult } from "@/store/searchResultSlice";
 import { FilterValue } from "@/types";
 
 const Books = () => {
@@ -18,7 +18,6 @@ const Books = () => {
   //TODO: 에러ui처리
   const { booksData, isError, isLoading } = useSelector((state: RootState) => state.searchResult);
   const dispatch = useDispatch<Dispatch>();
-  // booksData?.meta.pageable_count
 
   useEffect(() => {
     dispatch(
@@ -39,7 +38,7 @@ const Books = () => {
 
   return (
     <>
-      <Header bg={true}>
+      <Header bg={true} responsibleLogo={true}>
         <HorizontalSearchBox>
           <SearchFilter orientation="vertical" />
           <SearchForm focusOnLoad={false} />

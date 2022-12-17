@@ -14,7 +14,7 @@ const Pagination = () => {
   return (
     <MuiPaginaion
       count={totalPage}
-      page={Number(page)}
+      page={Number(page) > totalPage ? totalPage : Number(page)}
       onChange={handleChange}
       color="primary"
       sx={{ mb: "30px" }}

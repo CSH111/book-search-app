@@ -23,7 +23,10 @@ export const getBooks = createAsyncThunk(
 );
 
 interface State {
-  booksData: { documents: Book[]; meta: { is_end: boolean; pageable_count: number } } | null;
+  booksData: {
+    documents: Book[];
+    meta: { is_end: boolean; pageable_count: number; total_count: number };
+  } | null;
   isLoading: boolean;
   isError: boolean;
 }

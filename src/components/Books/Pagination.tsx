@@ -7,8 +7,8 @@ type PaginationProps = {
 
 const Pagination = () => {
   const [params, setParams] = useSearchParams();
-  const { target, filter, title, query, total, page, size } = Object.fromEntries(params.entries());
-  const totalPage = Math.ceil(Number(total) / Number(size));
+  const { total, page, size } = Object.fromEntries(params.entries());
+  const totalPage = total ? Math.ceil(Number(total) / Number(size)) : 0;
   const handleChange = (event: React.ChangeEvent<unknown>, page: number) => {
     params.set("page", page.toString());
     setParams(params);

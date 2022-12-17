@@ -65,7 +65,6 @@ const BookItem = ({
           </Grid>
         </Grid>
       )}
-      {/* display="flex" flexDirection="row" flexWrap="nowrap" */}
 
       {!downMid && (
         <Grid container spacing={2}>

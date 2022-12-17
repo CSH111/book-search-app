@@ -11,12 +11,14 @@ import { HorizontalSearchBox, SearchFilter } from "@/components/common/SearchFor
 import { type Dispatch, type RootState } from "@/store";
 import { getBooksForResult, searchResultActions } from "@/store/searchResultSlice";
 import { FilterValue } from "@/types";
-// ------FIX 검색어 바꾸자마자 바로 제출하면 버그 발생(결과안뜸)
+
 const Books = () => {
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const { target, query, page, size, total } = Object.fromEntries(params.entries());
+  //TODO: 에러ui처리
   const { booksData, isError, isLoading } = useSelector((state: RootState) => state.searchResult);
   const dispatch = useDispatch<Dispatch>();
+  // booksData?.meta.pageable_count
 
   useEffect(() => {
     dispatch(
@@ -28,6 +30,12 @@ const Books = () => {
       })
     );
   }, [query, page]);
+
+  useEffect(() => {
+    if (!booksData) return;
+    params.set("total", booksData.meta.pageable_count.toString());
+    setParams(params);
+  }, [booksData]);
 
   return (
     <>
@@ -48,7 +56,7 @@ const Books = () => {
                   idx
                 ) => {
                   return (
-                    <React.Fragment key={isbn}>
+                    <React.Fragment key={isbn + title}>
                       {idx !== 0 && <Divider sx={{ margin: "15px" }} />}
                       <BookItem
                         authors={authors}

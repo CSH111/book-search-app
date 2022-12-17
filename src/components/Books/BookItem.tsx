@@ -37,9 +37,13 @@ const BookItem = ({
           </Grid>
           <Grid item container spacing={2}>
             <Grid item xs="auto" xxs={12}>
-              <Box display={"flex"} justifyContent="center">
-                <img src={thumbnail} />
-              </Box>
+              <ImgBox>
+                {thumbnail ? (
+                  <img src={thumbnail} alt="bookImg" />
+                ) : (
+                  <span>표지 이미지가 없습니다.</span>
+                )}
+              </ImgBox>
             </Grid>
             <Grid item container direction="column" xs>
               <Grid item container direction="column">
@@ -50,7 +54,7 @@ const BookItem = ({
                   <BookTypography label="출판사" contents={publisher} />
                 </Grid>
                 <Grid item>
-                  <BookTypography label="출간월" contents={formatISO(datetime)} />
+                  <BookTypography label="출간연월" contents={formatISO(datetime)} />
                 </Grid>
               </Grid>
               <Grid item container direction="column">
@@ -69,7 +73,13 @@ const BookItem = ({
       {!underMid && (
         <Grid container spacing={2}>
           <Grid item>
-            <img src={thumbnail} />
+            <ImgBox>
+              {thumbnail ? (
+                <img src={thumbnail} alt="bookImg" />
+              ) : (
+                <span>표지 이미지가 없습니다.</span>
+              )}
+            </ImgBox>
           </Grid>
           <Grid item container direction="column" md={6} lg={8}>
             <Grid item>
@@ -114,5 +124,26 @@ const BookTypography = ({ label = "", contents = "" }) => {
         {contents}
       </Typography>
     </>
+  );
+};
+
+type ImgBoxType = {
+  children: React.ReactNode;
+};
+const ImgBox = ({ children }: ImgBoxType) => {
+  return (
+    <Box
+      display={"flex"}
+      justifyContent="center"
+      sx={{
+        width: "120px",
+        minWidth: "120px",
+        height: "174px",
+        minHeight: "174px",
+        outline: "solid 1px grey",
+      }}
+    >
+      {children}
+    </Box>
   );
 };

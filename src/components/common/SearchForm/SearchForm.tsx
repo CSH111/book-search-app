@@ -60,7 +60,6 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
   };
 
   const executeSubmitLogic = (query?: string) => {
-    console.log("서브밋");
     dispatch(booksActions.clear());
     navigateToBooks(query);
   };

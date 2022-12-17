@@ -4,7 +4,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
-import { BookItem, Container, Pagination } from "@/components/Books";
+import { BookItem, Container, NoResult, Pagination } from "@/components/Books";
 import { SearchForm } from "@/components/common";
 import { Header } from "@/components/common/Header";
 import { HorizontalSearchBox, SearchFilter } from "@/components/common/SearchForm";
@@ -47,7 +47,7 @@ const Books = () => {
       </Header>
       <Container>
         <Box sx={{ flex: 1, alignSelf: "stretch", mb: "30px" }}>
-          {total === "0" && <div>검색 결과가 없습니다.</div>}
+          {total === "0" && <NoResult />}
           {total !== "0" && (
             <List>
               {booksData?.documents.map(

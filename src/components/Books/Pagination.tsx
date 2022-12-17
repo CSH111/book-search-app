@@ -1,10 +1,6 @@
 import { Pagination as MuiPaginaion } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 
-type PaginationProps = {
-  count: number;
-};
-
 const Pagination = () => {
   const [params, setParams] = useSearchParams();
   const { total, page, size } = Object.fromEntries(params.entries());

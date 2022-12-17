@@ -12,6 +12,7 @@ const Pagination = () => {
   const handleChange = (event: React.ChangeEvent<unknown>, page: number) => {
     params.set("page", page.toString());
     setParams(params);
+    window.scrollTo({ top: 0 });
   };
 
   return (

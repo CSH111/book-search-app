@@ -68,7 +68,7 @@ const BookItem = ({
       {/* display="flex" flexDirection="row" flexWrap="nowrap" */}
 
       {!downMid && (
-        <Grid container spacing={2} md>
+        <Grid container spacing={2}>
           <Grid item>
             <img src={thumbnail} />
           </Grid>

@@ -2,8 +2,7 @@
 
 ## 배포주소
 
-https://chosungho-book-search-app.netlify.app/?filter=title
-
+https://chosungho-book-search-app.netlify.app
 <br>
 
 ## 프로젝트 개요
@@ -106,7 +105,7 @@ breakpoints: {
 - 검색 요청 파라미터(target, query, page, size) 및 필터상태를 url에 저장합니다.
 - 이를 통해 직접 결과링크로 접근할 수 있도록 구현해 사용자의 접근성을 향상시켰습니다.
 
-- https://chosungho-book-search-app.netlify.app/books?target=title&filter=title&query=부자아빠&page=5&size=10&total=132
+- https://chosungho-book-search-app.netlify.app/books?target=title&filter=title&query=부자아빠&page=5&size=10
 
 <br>
 

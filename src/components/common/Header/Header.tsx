@@ -18,7 +18,7 @@ const Header = ({ children, bg, shadow, responsibleLogo = false }: HeaderProps) 
   const underSmall = useMediaQuery(breakpoints.down("sm"));
   // maxHeight: "64px"
   return (
-    <S.AppBar position="static" sx={{ boxShadow: shadow ?? 2 }}>
+    <S.AppBar position="sticky" sx={{ boxShadow: shadow ?? 2 }}>
       <S.ToolBar sx={{ bgcolor: bg ? "#eeeeeea1" : null }}>
         <S.LogoArea>
           <Link to="/?filter=title">

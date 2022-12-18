@@ -6,7 +6,8 @@
 ![filterChange](https://user-images.githubusercontent.com/105113833/208283463-aca4d01c-fd36-4d8b-aee5-37d9110b17f9.gif)
 
 ### 추천검색어
-![recommend](https://user-images.githubusercontent.com/105113833/208283507-4ccbf385-faa8-43d5-b9bf-1086c62ff0c3.gif)
+![recommend2](https://user-images.githubusercontent.com/105113833/208283862-206dc1fe-a4f4-4251-a39b-830097b3bfb9.gif)
+
 
 ### 페이지네이션
 ![pagination](https://user-images.githubusercontent.com/105113833/208283529-05f2ed2a-c02e-4a53-9161-a17ffaeed1e8.gif)

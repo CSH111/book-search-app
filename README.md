@@ -24,8 +24,7 @@ https://chosungho-book-search-app.netlify.app/?filter=title
 ## 기술스택 및 사용라이브러리
 
 <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" /> <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white">  
-<img src="https://img.shields.io/badge/
-Material--UI-white?style=for-the-badge&logo=mui&logoColor=007fff"><img src="https://img.shields.io/badge/mui--icons-e7e7e7?style=for-the-badge">  
+<img src="https://img.shields.io/badge/Material--UI-f6f8fa?style=for-the-badge&logo=mui&logoColor=007fff"> <img src="https://img.shields.io/badge/mui--icons-e7e7e7?style=for-the-badge">  
 <img src="https://img.shields.io/badge/Redux--toolkit-593D88?style=for-the-badge&logo=redux&logoColor=white">  
 <img src="https://img.shields.io/badge/axios-e7e7e7?style=for-the-badge">
 

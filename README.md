@@ -16,7 +16,6 @@ https://chosungho-book-search-app.netlify.app
 
 - 2022-12-08 ~ 2022-12-18
   - 기능구현: 필터별(제목, 저자) 검색, 검색어추천, 페이지네이션, 반응형 레이아웃, 딥링크
-- [진행예정(리팩토링)](#코드개선-계획)
 
 <br>
 
@@ -26,6 +25,19 @@ https://chosungho-book-search-app.netlify.app
 <img src="https://img.shields.io/badge/Material--UI-f6f8fa?style=for-the-badge&logo=mui&logoColor=007fff"> <img src="https://img.shields.io/badge/mui--icons-e7e7e7?style=for-the-badge">  
 <img src="https://img.shields.io/badge/Redux--toolkit-593D88?style=for-the-badge&logo=redux&logoColor=white">  
 <img src="https://img.shields.io/badge/axios-e7e7e7?style=for-the-badge">
+
+<br>
+
+## 학습, 구현 및 개선사항
+
+- Public API(daum 책검색api) 활용 및 REST api 통신
+- typescript + IDE(VScode)의 자동완성 및 선제적 오류확인을 통한 생산성 향상
+- redux toolkit을 이용한 전역상태관리 및 thunk를 이용한 redux 비동기 처리
+- http 생성 및 service 호출 로직에 의존성 주입(DI) 패턴을 적용해 프로그램 유연성 향상
+- UI 라이브러리(mui)를 활용한 생산성 향상
+- UI 라이브러리 커스터마이징을 통한 검색창 , 페이지네이션, 반응형 웹 등 UI 구현
+- URL 쿼리 파리미터에 api 호출 상태를 연동해 필터링 및 검색결과에 대한 사용자의 접근성 향상
+- 추천 검색어 API 요청 로직에 디바운싱을 적용해 API 호출 횟수 최적화
 
 <br>
 

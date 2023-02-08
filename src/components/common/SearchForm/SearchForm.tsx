@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
 
 import { FILTER_VALUES, PARAMS_KEYS } from "@/constants";
+import { useDebounce } from "@/hooks";
 import { type Dispatch, type RootState } from "@/store";
 import { booksActions, getBooks } from "@/store/booksSlice";
 import { FilterValue } from "@/types";
@@ -37,6 +38,8 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
   const [optionValue, setOptionValue] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState("");
   const [savedInputValue, setSavedInputValue] = useState(query ?? "");
+  const debouncedSavedInputValue = useDebounce(savedInputValue);
+
   const input = useRef<HTMLInputElement>(null);
 
   const [isPopupOpened, setIsPopupOpened] = useState(false);
@@ -93,23 +96,16 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
     setInputValue(query);
   }, [query]);
 
-  // TODO: 분리
   useEffect(() => {
-    if (savedInputValue === "") return;
-    const timer = setTimeout(async () => {
-      dispatch(
-        getBooks({
-          [PARAMS_KEYS.query]: savedInputValue,
-          [PARAMS_KEYS.target]: filterValue as FilterValue,
-          size: 8,
-        })
-      );
-    }, 350);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [savedInputValue, filterValue]);
+    if (debouncedSavedInputValue === "") return;
+    dispatch(
+      getBooks({
+        [PARAMS_KEYS.query]: savedInputValue,
+        [PARAMS_KEYS.target]: filterValue as FilterValue,
+        size: 8,
+      })
+    );
+  }, [debouncedSavedInputValue, filterValue]);
 
   useEffect(() => {
     if (inputValue === "") {

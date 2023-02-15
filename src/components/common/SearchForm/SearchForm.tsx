@@ -33,6 +33,7 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
   const [options, setOptions] = useState<string[] | null>(null);
 
   const [params, setParams] = useSearchParams();
+
   const { filter: filterValue, query } = Object.fromEntries(params.entries());
 
   const [optionValue, setOptionValue] = useState<string | null>(null);
@@ -48,21 +49,19 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
   const paramsForNavigation = {
     [PARAMS_KEYS.target]: filterValue,
     [PARAMS_KEYS.filter]: filterValue,
-    [PARAMS_KEYS.query]: inputValue,
+    // [PARAMS_KEYS.query]: inputValue,
     [PARAMS_KEYS.page]: "1",
     [PARAMS_KEYS.size]: "10",
   };
 
-  const navigateToBooks = (query?: string) => {
+  const navigateToBooks = (query: string) => {
     navigate({
       pathname: "/books",
-      search: query
-        ? `?${createSearchParams({ ...paramsForNavigation, [PARAMS_KEYS.query]: query })}`
-        : `?${createSearchParams({ ...paramsForNavigation })}`,
+      search: `?${createSearchParams({ ...paramsForNavigation, [PARAMS_KEYS.query]: query })}`,
     });
   };
 
-  const executeSubmitLogic = (query?: string) => {
+  const executeSubmitLogic = (query: string) => {
     dispatch(booksActions.clear());
     navigateToBooks(query);
   };
@@ -114,12 +113,12 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
     }
   }, [inputValue, filterValue]);
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+  const handleSubmitWithEnter: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    executeSubmitLogic();
+    executeSubmitLogic(inputValue);
   };
 
-  const handleClickOption = (
+  const handleClickResultItem = (
     e: React.SyntheticEvent<Element, Event>,
     value: string | null,
     reason: AutocompleteChangeReason
@@ -163,7 +162,7 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
     setIsPopupOpened(false);
   };
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmitWithEnter}>
       <Autocomplete
         onOpen={handlePopupOpen}
         onClose={handlePopupClose}
@@ -171,7 +170,7 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
         loadingText={"추천 검색어가 없습니다."}
         options={options ?? []}
         value={optionValue}
-        onChange={handleClickOption}
+        onChange={handleClickResultItem}
         inputValue={inputValue}
         onInputChange={handleInputChange}
         onHighlightChange={handleHighlightChange}

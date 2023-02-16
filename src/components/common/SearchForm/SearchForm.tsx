@@ -15,7 +15,7 @@ import { FILTER_VALUES, PARAMS_KEYS } from "@/constants";
 import { useDebounce } from "@/hooks";
 import { type Dispatch, type RootState } from "@/store";
 import { booksActions, getBooks } from "@/store/booksSlice";
-import { FilterValue } from "@/types";
+import { FilterValue, ParamsKey } from "@/types";
 import { extractAuthorsFromBooks, extractTitlesFromBooks } from "@/utils";
 
 import * as S from "./styles";
@@ -46,24 +46,26 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
   const [isPopupOpened, setIsPopupOpened] = useState(false);
   const isNoResult = options !== null && options.length === 0;
 
-  const paramsForNavigation = {
-    [PARAMS_KEYS.target]: filterValue,
-    [PARAMS_KEYS.filter]: filterValue,
-    // [PARAMS_KEYS.query]: inputValue,
-    [PARAMS_KEYS.page]: "1",
-    [PARAMS_KEYS.size]: "10",
+  const paramsForNavigation: { [key in ParamsKey]?: string } = {
+    target: filterValue,
+    filter: filterValue,
+    page: "1",
+    size: "10",
   };
 
-  const navigateToBooks = (query: string) => {
+  const navigateToBooks = (searchValue: string) => {
     navigate({
       pathname: "/books",
-      search: `?${createSearchParams({ ...paramsForNavigation, [PARAMS_KEYS.query]: query })}`,
+      search: `?${createSearchParams({
+        ...paramsForNavigation,
+        [PARAMS_KEYS.query]: searchValue,
+      })}`,
     });
   };
 
-  const executeSubmitLogic = (query: string) => {
+  const executeSubmitLogic = (searchValue: string) => {
     dispatch(booksActions.clear());
-    navigateToBooks(query);
+    navigateToBooks(searchValue);
   };
 
   useEffect(() => {

@@ -7,6 +7,8 @@ import {
 } from "@mui/material";
 import { css, styled } from "@mui/material/styles";
 
+import { FilterValue } from "@/types";
+
 export const Tabs = styled(MuiTabs)`
   ${({ theme: { palette }, orientation }) => css`
     background-color: ${palette.grey[200]};
@@ -51,7 +53,13 @@ export const Tabs = styled(MuiTabs)`
     `}
   `}
 `;
-export const Tab = styled(MuiTab)`
+
+export interface TabProps {
+  value: FilterValue;
+  // value: "title" | "person";
+}
+
+export const Tab = styled(MuiTab)<TabProps>`
   ${({ theme: { palette } }) => css`
     transition: all 0.3s;
     z-index: 1;

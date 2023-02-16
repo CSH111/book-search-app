@@ -2,8 +2,8 @@ import { MenuBook, Person } from "@mui/icons-material";
 import { SxProps } from "@mui/system";
 import { useSearchParams } from "react-router-dom";
 
-import { FILTER_VALUES, PARAMS_KEYS } from "@/constants";
-import { FilterValue } from "@/types";
+import { FILTER_VALUES } from "@/constants";
+import { FilterValue, ParamsKey } from "@/types";
 
 import * as S from "./styles";
 
@@ -13,13 +13,12 @@ type SearchFilterProps = {
 };
 const SearchFilter = ({ orientation, sx }: SearchFilterProps) => {
   const [params, setParams] = useSearchParams();
-
-  // const filterValue = params.get(PARAMS_KEYS.filter) as FilterValue;
-  const filterValue = params.get(PARAMS_KEYS.filter) ?? FILTER_VALUES.title;
-
+  const getParams = (param: ParamsKey) => params.get(param);
+  const preSetParams = (param: ParamsKey, value: FilterValue) => params.set(param, value);
+  const filterValue = getParams("filter") ?? FILTER_VALUES.title;
   const handleToggleChange = (e: React.SyntheticEvent<Element, Event>, value: FilterValue) => {
     if (!value) return;
-    params.set(PARAMS_KEYS.filter, value);
+    preSetParams("filter", value);
     setParams(params);
   };
   return (

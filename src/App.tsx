@@ -22,3 +22,5 @@ function App() {
 }
 
 export default App;
+
+//TODO: query 상수가 필요한가? 자동완성으로 커버해보기

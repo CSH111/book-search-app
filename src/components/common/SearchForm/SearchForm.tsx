@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
 
-import { FILTER_VALUES, PARAMS_KEYS } from "@/constants";
+import { FILTER_VALUES } from "@/constants";
 import { useDebounce } from "@/hooks";
 import { type Dispatch, type RootState } from "@/store";
 import { booksActions, getBooks } from "@/store/booksSlice";
@@ -24,16 +24,24 @@ import * as S from "./styles";
 type SearchFormProps = {
   focusOnLoad?: boolean;
 };
+
+type Params = {
+  // [key in ParamsKey]?: FilterValue | string;
+  [key in ParamsKey]?: string;
+};
+
 const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
   const navigate = useNavigate();
   //TODO 에러ui처리
+  const createSearchParamsWithKeys = (params: Params) => createSearchParams(params);
   const { booksData, isError, isLoading } = useSelector((state: RootState) => state.books);
   const dispatch = useDispatch<Dispatch>();
 
   const [options, setOptions] = useState<string[] | null>(null);
 
   const [params, setParams] = useSearchParams();
-
+  const setFilterParamsWithKey = (params: { [key in ParamsKey]?: FilterValue }) =>
+    setParams(params);
   const { filter: filterValue, query } = Object.fromEntries(params.entries());
 
   const [optionValue, setOptionValue] = useState<string | null>(null);
@@ -46,7 +54,7 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
   const [isPopupOpened, setIsPopupOpened] = useState(false);
   const isNoResult = options !== null && options.length === 0;
 
-  const paramsForNavigation: { [key in ParamsKey]?: string } = {
+  const defaultParamsForNavigation: Params = {
     target: filterValue,
     filter: filterValue,
     page: "1",
@@ -56,9 +64,9 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
   const navigateToBooks = (searchValue: string) => {
     navigate({
       pathname: "/books",
-      search: `?${createSearchParams({
-        ...paramsForNavigation,
-        [PARAMS_KEYS.query]: searchValue,
+      search: `?${createSearchParamsWithKeys({
+        ...defaultParamsForNavigation,
+        query: searchValue,
       })}`,
     });
   };
@@ -89,7 +97,7 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
 
   useEffect(() => {
     if (filterValue) return;
-    setParams({ [PARAMS_KEYS.filter]: FILTER_VALUES.title });
+    setFilterParamsWithKey({ filter: "title" });
   }, []);
 
   useEffect(() => {
@@ -101,8 +109,8 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
     if (debouncedSavedInputValue === "") return;
     dispatch(
       getBooks({
-        [PARAMS_KEYS.query]: savedInputValue,
-        [PARAMS_KEYS.target]: filterValue as FilterValue,
+        query: savedInputValue,
+        target: filterValue as FilterValue,
         size: 8,
       })
     );

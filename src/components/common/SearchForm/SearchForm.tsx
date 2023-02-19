@@ -7,11 +7,10 @@ import {
   InputAdornment,
   Popper,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
 
-import { FILTER_VALUES } from "@/constants";
 import { useDebounce } from "@/hooks";
 import { type Dispatch, type RootState } from "@/store";
 import { booksActions, getBooks } from "@/store/booksSlice";
@@ -26,7 +25,6 @@ type SearchFormProps = {
 };
 
 type Params = {
-  // [key in ParamsKey]?: FilterValue | string;
   [key in ParamsKey]?: string;
 };
 
@@ -42,7 +40,10 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
   const [params, setParams] = useSearchParams();
   const setFilterParamsWithKey = (params: { [key in ParamsKey]?: FilterValue }) =>
     setParams(params);
-  const { filter: filterValue, query } = Object.fromEntries(params.entries());
+  const { filter: filterValue, query } = useMemo(
+    () => Object.fromEntries(params.entries()),
+    [params]
+  );
 
   const [optionValue, setOptionValue] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState("");
@@ -81,13 +82,13 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
       setOptions(null);
       return;
     }
-    switch (filterValue) {
-      case FILTER_VALUES.title: {
+    switch (filterValue as FilterValue) {
+      case "title": {
         const titles = extractTitlesFromBooks(booksData.documents, inputValue);
         setOptions(titles);
         break;
       }
-      case FILTER_VALUES.person: {
+      case "person": {
         const authors = extractAuthorsFromBooks(booksData.documents, inputValue);
         setOptions(authors);
         break;
@@ -114,7 +115,7 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
         size: 8,
       })
     );
-  }, [debouncedSavedInputValue, filterValue]);
+  }, [debouncedSavedInputValue]);
 
   useEffect(() => {
     if (inputValue === "") {

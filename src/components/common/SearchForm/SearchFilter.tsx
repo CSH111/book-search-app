@@ -1,8 +1,8 @@
 import { MenuBook, Person } from "@mui/icons-material";
+import { TabProps } from "@mui/material/Tab";
 import { SxProps } from "@mui/system";
 import { useSearchParams } from "react-router-dom";
 
-import { FILTER_VALUES } from "@/constants";
 import { FilterValue, ParamsKey } from "@/types";
 
 import * as S from "./styles";
@@ -11,11 +11,12 @@ type SearchFilterProps = {
   orientation?: "horizontal" | "vertical";
   sx?: SxProps;
 };
+
 const SearchFilter = ({ orientation, sx }: SearchFilterProps) => {
   const [params, setParams] = useSearchParams();
   const getParams = (param: ParamsKey) => params.get(param);
   const preSetParams = (param: ParamsKey, value: FilterValue) => params.set(param, value);
-  const filterValue = getParams("filter") ?? FILTER_VALUES.title;
+  const filterValue = getParams("filter") ?? "title";
   const handleToggleChange = (e: React.SyntheticEvent<Element, Event>, value: FilterValue) => {
     if (!value) return;
     preSetParams("filter", value);
@@ -28,16 +29,18 @@ const SearchFilter = ({ orientation, sx }: SearchFilterProps) => {
       sx={sx}
       orientation={orientation ?? "horizontal"}
     >
-      <S.Tab
-        label={orientation === "horizontal" ? "제목" : <MenuBook />}
-        value={FILTER_VALUES.title}
-      />
-      <S.Tab
-        label={orientation === "horizontal" ? "저자" : <Person />}
-        value={FILTER_VALUES.person}
-      />
+      <Tab label={orientation === "horizontal" ? "제목" : <MenuBook />} value="title" />
+      <Tab label={orientation === "horizontal" ? "저자" : <Person />} value="person" />
     </S.Tabs>
   );
 };
 
 export default SearchFilter;
+
+interface MyTabProps extends TabProps {
+  value: FilterValue;
+}
+
+const Tab = ({ ...props }: MyTabProps) => {
+  return <S.Tab {...props} />;
+};

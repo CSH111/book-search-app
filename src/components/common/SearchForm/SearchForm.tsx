@@ -32,7 +32,7 @@ const SearchForm = ({ focusOnLoad = true }: SearchFormProps) => {
   const navigate = useNavigate();
   //TODO 에러ui처리
   const createSearchParamsWithKeys = (params: Params) => createSearchParams(params);
-  const { booksData, isError, isLoading } = useSelector((state: RootState) => state.books);
+  const { booksData } = useSelector((state: RootState) => state.books);
   const dispatch = useDispatch<Dispatch>();
 
   const [options, setOptions] = useState<string[] | null>(null);

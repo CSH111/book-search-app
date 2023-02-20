@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { BooksImg } from "@/components/common";
 
 import * as S from "./styles";
-//TODO: 모바일뷰에서 로고글자 대신 메인이미지 + Avatar태그
 type HeaderProps = {
   children?: React.ReactNode;
   bg?: boolean;
@@ -16,7 +15,6 @@ type HeaderProps = {
 const Header = ({ children, bg, shadow, responsibleLogo = false }: HeaderProps) => {
   const { breakpoints } = useTheme();
   const underSmall = useMediaQuery(breakpoints.down("sm"));
-  // maxHeight: "64px"
   return (
     <S.AppBar position="sticky" sx={{ boxShadow: shadow ?? 2 }}>
       <S.ToolBar sx={{ bgcolor: bg ? "#eeeeeea1" : null }}>
